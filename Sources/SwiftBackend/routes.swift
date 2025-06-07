@@ -1,11 +1,10 @@
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.get { req async in
-        "It works!"
-    }
-
-    app.get("hello") { req async -> String in
-        "Hello, world!"
+    app.post("user") { req async throws -> User in
+        try User.validate(content: req)
+        let input: User = try req.content.decode(User.self)
+        try await input.create(on: req.db)
+        return input
     }
 }
