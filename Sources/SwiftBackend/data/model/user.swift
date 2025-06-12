@@ -22,15 +22,19 @@ final class User: Model, ValidatableContent, @unchecked Sendable {
     @Field(key: "EMAIL")
     var email: String
     
+    @Field(key: "PASSWORD")
+    var password: String
+    
     init() {
         //Default constructor
     }
     
-    init(id: Int? = nil, name: String, lastName: String, email: String) {
+    init(id: Int? = nil, name: String, lastName: String, email: String, password: String) {
         self.name = name
         self.lastName = lastName
         self.email = email
         self.id = id
+        self.password = password
     }
     
     static func validations(_ validations: inout Validations)  {
@@ -51,6 +55,14 @@ final class User: Model, ValidatableContent, @unchecked Sendable {
             as: String.self,
             is: !.empty && .alphanumeric && .count(5...15),
             customFailureDescription: "Provided lastname is empty"
+        )
+        validations.add(
+            "password",
+            as: String.self,
+            is: !.empty && .count(8...) && .pattern(".*[A-Z]+.*") &&
+                .pattern(".*[a-z]+.*") &&
+                .pattern(".*[0-9]+.*"),
+            customFailureDescription: "Password must have at least 8 characters, one digit and one upper case letter"
         )
     }
 }
