@@ -9,4 +9,5 @@ func routes(_ app: Application) throws {
     app.post("user", use: userController.create)
     app.get("user", ":id", use: userController.getById)
     app.put("user", ":id", use: userController.update)
+    app.delete("user", ":id", use: userController.delete)
 }

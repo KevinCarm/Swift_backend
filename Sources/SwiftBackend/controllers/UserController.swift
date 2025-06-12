@@ -51,4 +51,13 @@ struct UserController {
         try await foundUser.update(on: req.db)
         return newUser
     }
+    
+    func delete(req: Request) async throws -> String {
+        let id: String = req.parameters.get("id")!
+        guard let foundUser = try await User.find(Int(id), on: req.db) else {
+            throw Abort(.notFound, reason: "User not found")
+        }
+        try await foundUser.delete(on: req.db)
+        return "User deleted successfully"
+    }
 }
