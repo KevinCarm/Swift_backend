@@ -23,6 +23,7 @@ struct UserController {
         input.password = password
         
         try await input.create(on: req.db)
+        input.password = ""
         return input
     }
     /**
@@ -49,6 +50,7 @@ struct UserController {
         foundUser.lastName = newUser.lastName
         foundUser.email = newUser.email
         try await foundUser.update(on: req.db)
+        newUser.password = ""
         return newUser
     }
     
