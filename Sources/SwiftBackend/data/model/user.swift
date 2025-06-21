@@ -10,8 +10,8 @@ import Vapor
 final class User: Model, ValidatableContent, @unchecked Sendable {
     static let schema = "USER"
     
-    @ID(custom: "ID")
-    var id: Int?
+    @ID(custom: "ID", generatedBy: .database)
+    var id: String?
     
     @Field(key: "NAME")
     var name: String
@@ -25,11 +25,14 @@ final class User: Model, ValidatableContent, @unchecked Sendable {
     @Field(key: "PASSWORD")
     var password: String
     
+    @Children(for: \.$user)
+    var posts: [Post]
+    
     init() {
         //Default constructor
     }
     
-    init(id: Int? = nil, name: String, lastName: String, email: String, password: String) {
+    init(id: String? = nil, name: String, lastName: String, email: String, password: String) {
         self.name = name
         self.lastName = lastName
         self.email = email

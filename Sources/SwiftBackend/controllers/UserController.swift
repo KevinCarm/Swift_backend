@@ -22,6 +22,7 @@ struct UserController {
         ).base64EncodedString()
         input.password = password
         
+        input.id = UUID().uuidString
         try await input.create(on: req.db)
         input.password = ""
         return input
@@ -31,7 +32,7 @@ struct UserController {
      */
     func getById(req: Request) async throws -> User {
         let id: String = req.parameters.get("id")!
-        guard let foundUser = try await User.find(Int(id), on: req.db) else {
+        guard let foundUser = try await User.find(id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
         }
         foundUser.password = ""
@@ -41,11 +42,10 @@ struct UserController {
             Update a user by id
      */
     func update(req: Request) async throws -> User {
-        let id: String = req.parameters.get("id")!
-        guard let foundUser = try await User.find(Int(id), on: req.db) else {
+        let newUser: User = try req.content.decode(User.self)
+        guard let foundUser = try await User.find(newUser.id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
         }
-        let newUser: User = try req.content.decode(User.self)
         foundUser.name = newUser.name
         foundUser.lastName = newUser.lastName
         foundUser.email = newUser.email
@@ -53,10 +53,12 @@ struct UserController {
         newUser.password = ""
         return newUser
     }
-    
+    /**
+        Delete user by id
+     */
     func delete(req: Request) async throws -> String {
         let id: String = req.parameters.get("id")!
-        guard let foundUser = try await User.find(Int(id), on: req.db) else {
+        guard let foundUser = try await User.find(id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
         }
         try await foundUser.delete(on: req.db)
