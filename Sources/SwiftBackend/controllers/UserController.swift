@@ -22,7 +22,6 @@ struct UserController {
         ).base64EncodedString()
         input.password = password
         
-        input.id = UUID().uuidString
         try await input.create(on: req.db)
         input.password = ""
         return input
@@ -31,7 +30,7 @@ struct UserController {
             Get user by id
      */
     func getById(req: Request) async throws -> User {
-        let id: String = req.parameters.get("id")!
+        let id = req.parameters.get("id", as: UUID.self)!
         guard let foundUser = try await User.find(id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
         }
@@ -57,7 +56,7 @@ struct UserController {
         Delete user by id
      */
     func delete(req: Request) async throws -> String {
-        let id: String = req.parameters.get("id")!
+        let id = req.parameters.get("id", as: UUID.self)!
         guard let foundUser = try await User.find(id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
         }

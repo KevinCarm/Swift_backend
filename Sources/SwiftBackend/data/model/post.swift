@@ -10,8 +10,8 @@ import Vapor
 final class Post: Model, ValidatableContent, @unchecked Sendable {
     static let schema = "POST"
 
-    @ID(custom: "ID", generatedBy: .database)
-    var id: Int?
+    @ID(key: .id)
+    var id: UUID?
     
     @Field(key: "TITLE")
     var title: String
@@ -31,7 +31,7 @@ final class Post: Model, ValidatableContent, @unchecked Sendable {
     }
     
     init(
-        id: Int? = nil,
+        id: UUID? = nil,
         title: String,
         description: String? = nil,
         userId: User.IDValue

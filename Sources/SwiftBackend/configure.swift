@@ -18,4 +18,6 @@ public func configure(_ app: Application) async throws {
         database: "SWIFT_BACKEND",
         tlsConfiguration: tlsConfig
     ), as: .mysql)
+    
+    app.migrations.add(UserMigration())
 }
