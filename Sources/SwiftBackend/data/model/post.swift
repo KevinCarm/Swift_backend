@@ -44,6 +44,17 @@ final class Post: Model, ValidatableContent, @unchecked Sendable {
     }
     
     static func validations(_ validations: inout Validations) {
-        
+        validations.add(
+            "title",
+            as: String.self,
+            is: !.empty,
+            customFailureDescription: "Title can not be empty"
+        )
+        validations.add(
+            "description",
+            as: String.self,
+            is: !.empty,
+            customFailureDescription: "Description can not be empty"
+        )
     }
 }

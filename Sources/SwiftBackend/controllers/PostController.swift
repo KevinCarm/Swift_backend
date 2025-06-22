@@ -24,6 +24,6 @@ struct PostController {
             userId: foundUser.id!
         )
         try await newPost.save(on: req.db)
-        return post
+        return newPost
     }
 }
