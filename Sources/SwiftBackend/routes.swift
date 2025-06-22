@@ -14,5 +14,5 @@ func routes(_ app: Application) throws {
     /**
         Post routes
      */
-    app.post("user", ":id", "post", use: postController.create)
+    app.post("post", use: postController.create)
 }

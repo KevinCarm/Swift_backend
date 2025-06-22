@@ -20,4 +20,5 @@ public func configure(_ app: Application) async throws {
     ), as: .mysql)
     
     app.migrations.add(UserMigration())
+    app.migrations.add(PostMigration())
 }

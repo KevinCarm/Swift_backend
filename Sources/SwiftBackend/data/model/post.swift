@@ -22,7 +22,7 @@ final class Post: Model, ValidatableContent, @unchecked Sendable {
     @Field(key: "POST_DATE")
     var postDate: Date?
     
-    @Parent(key: "id")
+    @Parent(key: "USER_ID")
     var user: User
     
     init() {
@@ -34,7 +34,7 @@ final class Post: Model, ValidatableContent, @unchecked Sendable {
         id: UUID? = nil,
         title: String,
         description: String? = nil,
-        userId: User.IDValue
+        userId: UUID
     ) {
         self.id = id
         self.title = title
@@ -44,11 +44,6 @@ final class Post: Model, ValidatableContent, @unchecked Sendable {
     }
     
     static func validations(_ validations: inout Validations) {
-        validations.add(
-            "title",
-            as: String.self,
-            is: !.empty && .alphanumeric,
-            customFailureDescription: "Title must not be empty"
-        )
+        
     }
 }
