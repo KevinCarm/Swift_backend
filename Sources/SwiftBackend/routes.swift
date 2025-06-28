@@ -15,4 +15,6 @@ func routes(_ app: Application) throws {
         Post routes
      */
     app.post("post", use: postController.create)
+    app.get("user", ":id", "post", use: postController.getAll)
+    app.get("post", ":id", use: postController.getById)
 }

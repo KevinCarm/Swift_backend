@@ -26,4 +26,40 @@ struct PostController {
         try await newPost.save(on: req.db)
         return newPost
     }
+    /**
+        Get user posts
+     */
+    func getAll(req: Request) async throws -> [ResponsePost] {
+        let userId = req.parameters.get("id", as: UUID.self)
+        guard let foundUser = try await User.find(userId, on: req.db) else {
+            throw Abort(.notFound)
+        }
+        let posts = try await Post.query(on: req.db)
+            .filter(\.$user.$id == foundUser.id!)
+            .with(\.$user)
+            .all()
+        return posts.map { post in
+            ResponsePost(
+                id: post.id!,
+                title: post.title,
+                description: post.description!,
+                postDate: post.postDate!
+            )
+        }
+    }
+    /**
+        Get post by id
+     */
+    func getById(req: Request) async throws -> ResponsePost {
+        let postId = req.parameters.get("id", as: UUID.self)
+        guard let foundPost = try await Post.find(postId, on: req.db) else {
+            throw Abort(.notFound)
+        }
+        return ResponsePost(
+            id: foundPost.id!,
+            title: foundPost.title,
+            description: foundPost.description!,
+            postDate: foundPost.postDate!
+        )
+    }
 }
