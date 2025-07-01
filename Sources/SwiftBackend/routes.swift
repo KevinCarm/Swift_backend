@@ -11,6 +11,7 @@ func routes(_ app: Application) throws {
     app.get("user", ":id", use: userController.getById)
     app.put("user", use: userController.update)
     app.delete("user", ":id", use: userController.delete)
+    app.post("login", use: userController.login)
     /**
         Post routes
      */

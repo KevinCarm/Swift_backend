@@ -28,6 +28,9 @@ final class User: Model, ValidatableContent, @unchecked Sendable {
     @Children(for: \.$user)
     var posts: [Post]
     
+    @Siblings(through: UserRoles.self, from: \.$user, to: \.$role)
+    var roles: [Role]
+    
     init() {
         //Default constructor
     }

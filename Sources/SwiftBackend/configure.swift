@@ -21,4 +21,6 @@ public func configure(_ app: Application) async throws {
     
     app.migrations.add(UserMigration())
     app.migrations.add(PostMigration())
+    app.migrations.add(RoleMigration())
+    app.migrations.add(UserRoleMigration())
 }

@@ -20,6 +20,7 @@ struct UserMigration: AsyncMigration {
             .field("LAST_NAME", .string, .required)
             .field("EMAIL", .string, .required)
             .field("PASSWORD", .string, .required)
+            .unique(on: "email")
             .create()
     }
 }
