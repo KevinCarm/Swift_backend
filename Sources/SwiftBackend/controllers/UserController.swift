@@ -17,10 +17,7 @@ struct UserController {
         try User.validate(content: req)
         let input: User = try req.content.decode(User.self)
         
-        input.password = try EncriyptionUtil.encrypData(
-            plainText: input.password,
-            using: KeyGenerator.getInstance()
-        ).base64EncodedString()
+        input.password = try EncriyptionUtil.encrypData(using: input.password)!
         
         try await input.create(on: req.db)
         if let userRole = try await Role.query(on: req.db).filter(\.$name == "user").first() {
@@ -67,7 +64,7 @@ struct UserController {
         return "User deleted successfully"
     }
     
-    func login(req: Request) async throws -> [Role] {
+    /*func login(req: Request) async throws -> [Role] {
         let input = try req.content.decode(Login.self)
         let foundUser = try await User.query(on: req.db)
             .filter(\.$email == input.email)
@@ -76,8 +73,36 @@ struct UserController {
         if foundUser == nil {
             throw Abort(.notFound)
         }
+        let encryptedPassword: String = foundUser!.password
+        let decryptedPassword: String? = try EncriyptionUtil.decrypData(
+            using: encryptedPassword
+        )
+
         let roles = try await foundUser!.$roles.query(on: req.db).all()
-       
+
         return roles
+    } */
+    
+    func login(req: Request) async throws -> User {
+        let input: Login = try req.content.decode(Login.self)
+        let foundUser: User? = try await User.query(on: req.db)
+            .filter(\.$email == input.email)
+            .with(\.$roles)
+            .first()
+        
+        if foundUser == nil {
+            throw Abort(.notFound)
+        }
+        
+        let encryptedPassword: String = foundUser!.password
+        let encrypInputPassword: String = try EncriyptionUtil.encrypData(
+            using: input.password
+        )!
+        
+        if encryptedPassword != encrypInputPassword {
+            throw Abort(.badRequest, reason: "email or password incorrect")
+        }
+        
+        return foundUser!
     }
 }

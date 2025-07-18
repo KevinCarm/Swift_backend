@@ -16,35 +16,14 @@ enum EncryptionError: Error {
 }
 
  class EncriyptionUtil {
+     
+     private static let rawKeyData: Data = KeyGenerator.getInstance()
     /**
         Encryp string data
      */
-    static func encrypData(plainText: String, using key: SymmetricKey) throws -> Data {
-        guard let data = plainText.data(using: .utf8) else {
-            throw EncryptionError.encryptionFailed
-        }
-        do {
-            let sealedBox = try AES.GCM.seal(data, using: key)
-            return sealedBox.combined!
-        } catch {
-            throw EncryptionError.encryptionFailed
-        }
-    }
-    static func decrypData(encrypData: String, using key: SymmetricKey) throws -> String {
-        do {
-            let data = Data(base64Encoded: encrypData)
-            let sealedBox = try AES.GCM.SealedBox(combined: data!)
-            let decryptedData = try AES.GCM.open(sealedBox, using: key)
-            
-            guard let decryptedString = String(
-                data: decryptedData,
-                encoding: .utf8
-            ) else {
-                throw EncryptionError.decryptionFailed
-            }
-            return decryptedString
-        } catch {
-            throw EncryptionError.decryptionFailed
-        }
+    public static func encrypData(using text: String) throws -> String? {
+        let inputData = Data(text.utf8)
+        let hash = SHA256.hash(data: inputData)
+        return hash.compactMap { String(format: "%02x", $0) }.joined()
     }
 }

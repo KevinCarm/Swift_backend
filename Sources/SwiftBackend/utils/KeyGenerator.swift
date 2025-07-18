@@ -19,9 +19,8 @@ final class KeyGenerator: Sendable {
         Generates a new, cryptographically secure symmetric key.
      */
     
-    static func getInstance() -> SymmetricKey {
+    static func getInstance() -> Data {
         let keyData = Data(fixedKeyBytes)
-        let key = SymmetricKey(data: keyData)
-        return key
+        return keyData
     }
 }
