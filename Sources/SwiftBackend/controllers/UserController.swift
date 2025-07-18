@@ -7,6 +7,7 @@
 
 import Vapor
 import Fluent
+import JWT
 
 struct UserController {
     /**
@@ -64,26 +65,10 @@ struct UserController {
         return "User deleted successfully"
     }
     
-    /*func login(req: Request) async throws -> [Role] {
-        let input = try req.content.decode(Login.self)
-        let foundUser = try await User.query(on: req.db)
-            .filter(\.$email == input.email)
-            .with(\.$roles)
-            .first()
-        if foundUser == nil {
-            throw Abort(.notFound)
-        }
-        let encryptedPassword: String = foundUser!.password
-        let decryptedPassword: String? = try EncriyptionUtil.decrypData(
-            using: encryptedPassword
-        )
-
-        let roles = try await foundUser!.$roles.query(on: req.db).all()
-
-        return roles
-    } */
-    
-    func login(req: Request) async throws -> User {
+    /**
+        Validate the input email and password
+     */
+    func login(req: Request) async throws -> [String: String] {
         let input: Login = try req.content.decode(Login.self)
         let foundUser: User? = try await User.query(on: req.db)
             .filter(\.$email == input.email)
@@ -103,6 +88,14 @@ struct UserController {
             throw Abort(.badRequest, reason: "email or password incorrect")
         }
         
-        return foundUser!
+        let roles: [Role] = foundUser!.roles
+        let subject: String = foundUser!.name
+        let payloadSign = PayloadSign(
+            subject: SubjectClaim(value: subject),
+            expiration: .init(value: .distantFuture),
+            role: roles[0].name
+        )
+        
+        return try await ["token": req.jwt.sign(payloadSign)]
     }
 }

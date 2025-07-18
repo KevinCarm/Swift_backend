@@ -16,8 +16,6 @@ enum EncryptionError: Error {
 }
 
  class EncriyptionUtil {
-     
-     private static let rawKeyData: Data = KeyGenerator.getInstance()
     /**
         Encryp string data
      */

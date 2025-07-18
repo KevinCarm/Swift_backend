@@ -1,9 +1,12 @@
 import Vapor
 import Fluent
 import FluentMySQLDriver
+import JWT
 
 // configures your application
 public func configure(_ app: Application) async throws {
+    //Add JWT
+    await app.jwt.keys.add(hmac: "secret", digestAlgorithm: .sha256)
     // register routes
     try routes(app)
     //These lines are only for development purpose only
