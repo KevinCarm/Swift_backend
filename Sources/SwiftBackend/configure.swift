@@ -22,6 +22,16 @@ public func configure(_ app: Application) async throws {
         tlsConfiguration: tlsConfig
     ), as: .mysql)
     
+    if app.environment == .testing {
+        app.databases.use(.mysql(
+            hostname: "localhost",
+            username: "root",
+            password: "12345678",
+            database: "SWIFT_BACKEND_TEST",
+            tlsConfiguration: tlsConfig
+        ), as: .mysql)
+    }
+    
     app.migrations.add(UserMigration())
     app.migrations.add(PostMigration())
     app.migrations.add(RoleMigration())
