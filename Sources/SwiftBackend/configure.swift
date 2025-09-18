@@ -17,7 +17,7 @@ public func configure(_ app: Application) async throws {
     app.databases.use(.mysql(
         hostname: "localhost",
         username: "root",
-        password: "12345678",
+        password: "Huawei#12",
         database: "SWIFT_BACKEND",
         tlsConfiguration: tlsConfig
     ), as: .mysql)
@@ -26,7 +26,7 @@ public func configure(_ app: Application) async throws {
         app.databases.use(.mysql(
             hostname: "localhost",
             username: "root",
-            password: "12345678",
+            password: "Huawei#12",
             database: "SWIFT_BACKEND_TEST",
             tlsConfiguration: tlsConfig
         ), as: .mysql)
