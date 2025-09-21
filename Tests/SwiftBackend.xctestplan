@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "707947B7-E323-4E4F-82C4-617D5F0B3D04",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "selectedTags" : {
+        "includeXCTests" : true
+      },
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftBackendTests",
+        "name" : "SwiftBackendTests"
+      }
+    }
+  ],
+  "version" : 1
+}

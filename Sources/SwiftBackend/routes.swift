@@ -2,6 +2,13 @@ import Vapor
 import Fluent
 
 func routes(_ app: Application) throws {
+    
+    let protected = app.grouped(
+        PayloadSign.authenticator(),
+        PayloadSign.guardMiddleware()
+    )
+    app.middleware.use(CustomErrorMiddleware())
+    
     let userController: UserController = UserController()
     let postController: PostController = PostController()
     /**
@@ -18,4 +25,6 @@ func routes(_ app: Application) throws {
     app.post("post", use: postController.create)
     app.get("user", ":id", "post", use: postController.getAll)
     app.get("post", ":id", use: postController.getById)
+    
+    protected.get("token", use: userController.testToken)
 }

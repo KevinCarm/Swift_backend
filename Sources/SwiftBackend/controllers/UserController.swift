@@ -98,4 +98,10 @@ struct UserController {
         
         return try await ["token": req.jwt.sign(payloadSign)]
     }
+    
+    func testToken(req: Request) async throws -> String {
+        let payload = try req.auth.require(PayloadSign.self)
+        
+        return "Hello Swift"
+    }
 }

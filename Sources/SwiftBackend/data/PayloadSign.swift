@@ -6,8 +6,9 @@
 //
 
 import JWT
+import Vapor
 
-struct PayloadSign: JWTPayload {
+struct PayloadSign: JWTPayload, Authenticatable {
     
     enum CodingKeys: String, CodingKey {
         case subject = "sub"
