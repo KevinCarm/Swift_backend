@@ -12,6 +12,7 @@ struct PostController {
         Create a new post
      */
     func create(req: Request) async throws -> Post {
+        let payload = try req.auth.require(PayloadSign.self)
         try Post.validate(content: req)
         let post = try req.content.decode(Post.self)
         let userId = post.$user.id

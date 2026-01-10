@@ -15,9 +15,9 @@ func routes(_ app: Application) throws {
         User routes
      */
     app.post("user", use: userController.create)
-    app.get("user", ":id", use: userController.getById)
-    app.put("user", use: userController.update)
-    app.delete("user", ":id", use: userController.delete)
+    protected.delete("user", ":id", use: userController.delete)
+    protected.put("user", use: userController.update)
+    protected.get("user", ":id", use: userController.getById)
     app.post("login", use: userController.login)
     /**
         Post routes
@@ -25,6 +25,4 @@ func routes(_ app: Application) throws {
     app.post("post", use: postController.create)
     app.get("user", ":id", "post", use: postController.getAll)
     app.get("post", ":id", use: postController.getById)
-    
-    protected.get("token", use: userController.testToken)
 }

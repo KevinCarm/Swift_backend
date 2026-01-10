@@ -14,6 +14,7 @@ struct UserController {
             Create a new user
      */
     func create(req: Request) async throws -> User {
+        
         //TODO: Validate if the input email already exists
         try User.validate(content: req)
         let input: User = try req.content.decode(User.self)
@@ -32,7 +33,10 @@ struct UserController {
      */
     func getById(req: Request) async throws -> User {
         let id = req.parameters.get("id", as: UUID.self)!
-        guard let foundUser = try await User.find(id, on: req.db) else {
+        guard let foundUser = try await User.query(on: req.db)
+            .filter(\.$id == id)
+            .with(\.$roles)
+            .first() else {
             throw Abort(.notFound, reason: "User not found")
         }
         foundUser.password = ""
@@ -42,6 +46,7 @@ struct UserController {
             Update a user by id
      */
     func update(req: Request) async throws -> User {
+        let _ = try req.auth.require(PayloadSign.self)
         let newUser: User = try req.content.decode(User.self)
         guard let foundUser = try await User.find(newUser.id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
@@ -57,6 +62,7 @@ struct UserController {
         Delete user by id
      */
     func delete(req: Request) async throws -> String {
+        let _ = try req.auth.require(PayloadSign.self)
         let id = req.parameters.get("id", as: UUID.self)!
         guard let foundUser = try await User.find(id, on: req.db) else {
             throw Abort(.notFound, reason: "User not found")
@@ -95,13 +101,10 @@ struct UserController {
             expiration: .init(value: .distantFuture),
             role: roles[0].name
         )
-        
-        return try await ["token": req.jwt.sign(payloadSign)]
-    }
-    
-    func testToken(req: Request) async throws -> String {
-        let payload = try req.auth.require(PayloadSign.self)
-        
-        return "Hello Swift"
+        let response: [String: String] = [
+            "user": foundUser!.id!.uuidString,
+            "token": try await req.jwt.sign(payloadSign)
+        ]
+        return response
     }
 }
